@@ -49,8 +49,29 @@ FutureOr<Response> addUser(ModularArguments args) async {
   return Response.ok("Usuario inserido");
 }
 
-FutureOr<Response> updateUser(ModularArguments args) =>
-    Response.ok('Updated user id ${args.params['id']}');
+FutureOr<Response> updateUser(ModularArguments args) async {
+  var connection = await PostgreSQLConnection("localhost", 5432, "checkin",
+      username: "postgres", password: "root");
+  await connection.open();
+  List<List<dynamic>> results = await connection.query(
+      "UPDATE users SET name = '${args.data["name"]}' where id = @${args.params.values}");
+  for (final row in results) {
+    print(row);
+  }
+  await connection.close();
+  return Response.ok("Usuario atualizado");
+}
 
-FutureOr<Response> deleteUser(ModularArguments args) =>
-    Response.ok('Deleted user id ${args.params['id']}');
+
+FutureOr<Response> deleteUser(ModularArguments args) async {
+  var connection = await PostgreSQLConnection("localhost", 5432, "checkin",
+      username: "postgres", password: "root");
+  await connection.open();
+  List<List<dynamic>> results = await connection.query(
+      "DELETE FROM users WHERE id = @${args.params.values}");
+  for (final row in results) {
+    print(row);
+  }
+  await connection.close();
+  return Response.ok("Usuario deletado");
+}
