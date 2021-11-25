@@ -1,4 +1,5 @@
 
+import 'package:api_check_in/users/controllers/user_controller.dart';
 import 'package:api_check_in/users/routes/user_resource.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_modular/shelf_modular.dart';
