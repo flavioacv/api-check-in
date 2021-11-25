@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:dotenv/dotenv.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 
 FutureOr<Response> getAllEvents() async {
-  var connection = await PostgreSQLConnection("localhost", 5432, "checkin",
-      username: "postgres", password: "root");
+   var connection = await PostgreSQLConnection(env['DB_HOST'], int.parse(env['DB_PORT']), env['DB_NAME'],
+      username: env["DB_USER"], password: env["DB_PASS"]);
   await connection.open();
   List<List<dynamic>> results =
       await connection.query("SELECT  id,name FROM events ");
@@ -18,8 +19,8 @@ FutureOr<Response> getAllEvents() async {
 }
 
 FutureOr<Response> getEvent(ModularArguments args) async {
-  var connection = await PostgreSQLConnection("localhost", 5432, "checkin",
-      username: "postgres", password: "root");
+ var connection = await PostgreSQLConnection(env['DB_HOST'], int.parse(env['DB_PORT']), env['DB_NAME'],
+      username: env["DB_USER"], password: env["DB_PASS"]);
   await connection.open();
   List<List<dynamic>> results = await connection.query(
       "SELECT id,name FROM events where id = @${args.params.values}");
@@ -31,8 +32,8 @@ FutureOr<Response> getEvent(ModularArguments args) async {
 }
 
 FutureOr<Response> addEvent(ModularArguments args) async {
-  var connection = await PostgreSQLConnection("localhost", 5432, "checkin",
-      username: "postgres", password: "root");
+  var connection = await PostgreSQLConnection(env['DB_HOST'], int.parse(env['DB_PORT']), env['DB_NAME'],
+      username: env["DB_USER"], password: env["DB_PASS"]);
   await connection.open();
   dynamic results = await connection.query("INSERT INTO events"
       " VALUES (DEFAULT,'${args.data["name"]}')");
@@ -41,8 +42,8 @@ FutureOr<Response> addEvent(ModularArguments args) async {
 }
 
 FutureOr<Response> updateEvent(ModularArguments args) async {
-  var connection = await PostgreSQLConnection("localhost", 5432, "checkin",
-      username: "postgres", password: "root");
+ var connection = await PostgreSQLConnection(env['DB_HOST'], int.parse(env['DB_PORT']), env['DB_NAME'],
+      username: env["DB_USER"], password: env["DB_PASS"]);
   await connection.open();
   List<List<dynamic>> results = await connection.query(
       "UPDATE events SET name = '${args.data["name"]}' where id = @${args.params.values}");
@@ -54,8 +55,8 @@ FutureOr<Response> updateEvent(ModularArguments args) async {
 }
 
 FutureOr<Response> deleteEvent(ModularArguments args) async {
-  var connection = await PostgreSQLConnection("localhost", 5432, "checkin",
-      username: "postgres", password: "root");
+ var connection = await PostgreSQLConnection(env['DB_HOST'], int.parse(env['DB_PORT']), env['DB_NAME'],
+      username: env["DB_USER"], password: env["DB_PASS"]);
   await connection.open();
   List<List<dynamic>> results = await connection
       .query("DELETE FROM events WHERE id = @${args.params.values}");
